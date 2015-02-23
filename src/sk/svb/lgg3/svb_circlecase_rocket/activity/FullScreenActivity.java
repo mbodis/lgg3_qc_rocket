@@ -23,7 +23,7 @@ public class FullScreenActivity extends ListActivity {
 
 	private void refreshList() {
 		setListAdapter(new GameStatsAdapter(this, R.layout.adapter_gamestats,
-				GameStats.find(GameStats.class, null, null)));
+				GameStats.find(GameStats.class, null, null, null, "score desc", "10")));
 	}
 
 	@Override

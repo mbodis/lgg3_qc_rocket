@@ -1,11 +1,16 @@
 package sk.svb.lgg3.svb_circlecase_rocket.view;
 
+import sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerActivity;
+import sk.svb.lgg3.svb_circlecase_rocket.logic.Block;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.Stars;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.Stars.Star;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -15,19 +20,22 @@ public class AccelerometerView extends SurfaceView implements Callback {
 
 	private CanvasThread canvasThread;
 
-	Paint c_red, c_bl, c_wh;
+	QcAccelerometerActivity act;
+	Paint c_red, c_bl, c_wh, c_wht;
 	int x = 0;
 	int y = 0;
 
 	// rocket size
 	int R_SIZE_W = 30;
 	int R_SIZE_H = 30;
-	
+
 	int W = 1046;
 	int H = 1046;
+
 	private Stars stars;
-	
-	
+	private Block block;
+
+	public int points = 0;
 
 	public AccelerometerView(Context context) {
 		super(context);
@@ -43,6 +51,7 @@ public class AccelerometerView extends SurfaceView implements Callback {
 		this.setFocusable(true);
 		setWillNotDraw(false);
 		stars = new Stars(W, H);
+		block = new Block(W, H);
 
 	}
 
@@ -61,31 +70,60 @@ public class AccelerometerView extends SurfaceView implements Callback {
 		c_wh = new Paint();
 		c_wh.setStrokeWidth(4);
 		c_wh.setColor(Color.WHITE);
-		
+
+		c_wht = new Paint();
+		c_wht.setColor(Color.WHITE);
 	}
-	
+
+	public void setActivit(Activity act) {
+		this.act = (QcAccelerometerActivity) act;
+	}
 
 	protected void myDraw(Canvas canvas) {
-		
+
 		canvas.drawARGB(255, 0, 0, 0);
 
 		for (Star s : stars.getStarList()) {
-			canvas.drawCircle(s.x , s.y, s.size, c_wh);
+			canvas.drawCircle(s.x, s.y, s.size, c_wht);
 		}
 		stars.updateStars();
-		
+
 		int xx = (int) ((double) canvas.getWidth() / 80 * x);
 		int yy = (int) ((double) canvas.getHeight() / 80 * y);
 
-		int cx = canvas.getWidth() / 2 + xx;
-		int cy = canvas.getHeight() / 2 + yy;
-		
+		int rx = canvas.getWidth() / 2 + xx;
+		int ry = canvas.getHeight() / 2 + yy;
 
-		canvas.drawLine(cx, cy - R_SIZE_H, cx + R_SIZE_W, cy + R_SIZE_H, c_wh);
-		canvas.drawLine(cx + R_SIZE_W, cy + R_SIZE_H, cx - R_SIZE_W, cy
+		canvas.drawLine(rx, ry - R_SIZE_H, rx + R_SIZE_W, ry + R_SIZE_H, c_wh);
+		canvas.drawLine(rx + R_SIZE_W, ry + R_SIZE_H, rx - R_SIZE_W, ry
 				+ R_SIZE_H, c_wh);
-		canvas.drawLine(cx - R_SIZE_W, cy + R_SIZE_H, cx, cy - R_SIZE_H, c_wh);
+		canvas.drawLine(rx - R_SIZE_W, ry + R_SIZE_H, rx, ry - R_SIZE_H, c_wh);
 
+		canvas.drawRect(block.getRect1(), c_wht);
+		canvas.drawRect(block.getRect2(), c_wht);
+		block.update();
+		if (block.throughGate(rx, ry)) {
+			points++;
+			updateScore();
+			doVibrate(act, 20);
+		}
+		if (block.detectCollision(rx, ry)){
+			doVibrate(act, 500);
+			endGame();
+		}
+
+	}
+
+	public void updateScore() {
+		Intent i = new Intent("game_update");
+		i.putExtra("score", true);
+		act.sendBroadcast(i);
+	}
+
+	public void endGame() {
+		Intent i = new Intent("game_update");
+		i.putExtra("end", true);
+		act.sendBroadcast(i);
 	}
 
 	public void setCoords(int x, int y) {
@@ -168,5 +206,10 @@ public class AccelerometerView extends SurfaceView implements Callback {
 				}
 			}
 		}
+	}
+	
+	public void doVibrate(Context ctx, long milis) {
+		Vibrator v = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
+		v.vibrate(milis);
 	}
 }

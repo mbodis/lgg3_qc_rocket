@@ -57,9 +57,8 @@ public class GameStatsAdapter extends ArrayAdapter<GameStats> {
 		}
 
 		GameStats gs = getItem(position);
-		holder.date.setText(act.getString(R.string.actual_score) + ": "
-				+ gs.getDate());
-		holder.highScore.setText(gs.getScore() + "");
+		holder.date.setText(gs.getDate());
+		holder.highScore.setText(act.getString(R.string.actual_score) + ": " + gs.getScore());
 
 		return convertView;
 
