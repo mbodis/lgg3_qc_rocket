@@ -1,13 +1,15 @@
 package sk.svb.lgg3.svb_circlecase_rocket.view;
 
+import sk.svb.lgg3.svb_circlecase_rocket.logic.Stars;
+import sk.svb.lgg3.svb_circlecase_rocket.logic.Stars.Star;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.SurfaceHolder.Callback;
+import android.view.SurfaceView;
 
 public class AccelerometerView extends SurfaceView implements Callback {
 
@@ -20,6 +22,12 @@ public class AccelerometerView extends SurfaceView implements Callback {
 	// rocket size
 	int R_SIZE_W = 30;
 	int R_SIZE_H = 30;
+	
+	int W = 1046;
+	int H = 1046;
+	private Stars stars;
+	
+	
 
 	public AccelerometerView(Context context) {
 		super(context);
@@ -34,6 +42,7 @@ public class AccelerometerView extends SurfaceView implements Callback {
 		this.canvasThread = new CanvasThread(getHolder());
 		this.setFocusable(true);
 		setWillNotDraw(false);
+		stars = new Stars(W, H);
 
 	}
 
@@ -54,18 +63,23 @@ public class AccelerometerView extends SurfaceView implements Callback {
 		c_wh.setColor(Color.WHITE);
 		
 	}
+	
 
 	protected void myDraw(Canvas canvas) {
-
+		
 		canvas.drawARGB(255, 0, 0, 0);
 
+		for (Star s : stars.getStarList()) {
+			canvas.drawCircle(s.x , s.y, s.size, c_wh);
+		}
+		stars.updateStars();
+		
 		int xx = (int) ((double) canvas.getWidth() / 80 * x);
 		int yy = (int) ((double) canvas.getHeight() / 80 * y);
 
 		int cx = canvas.getWidth() / 2 + xx;
 		int cy = canvas.getHeight() / 2 + yy;
-
-		// canvas.drawCircle(cx , cy, 10, c_red);
+		
 
 		canvas.drawLine(cx, cy - R_SIZE_H, cx + R_SIZE_W, cy + R_SIZE_H, c_wh);
 		canvas.drawLine(cx + R_SIZE_W, cy + R_SIZE_H, cx - R_SIZE_W, cy
