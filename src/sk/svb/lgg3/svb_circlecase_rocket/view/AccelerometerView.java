@@ -101,7 +101,7 @@ public class AccelerometerView extends SurfaceView implements Callback {
 
 		canvas.drawRect(block.getRect1(), c_wht);
 		canvas.drawRect(block.getRect2(), c_wht);
-		block.update();
+		block.update(points);
 		if (block.throughGate(rx, ry)) {
 			points++;
 			updateScore();

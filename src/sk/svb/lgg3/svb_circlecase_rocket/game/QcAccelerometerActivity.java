@@ -6,11 +6,11 @@ import java.util.List;
 
 import sk.svb.lgg3.svb_circlecase_rocket.R;
 import sk.svb.lgg3.svb_circlecase_rocket.activity.CurrentScoreActivity;
-import sk.svb.lgg3.svb_circlecase_rocket.activity.FullScreenActivity;
-import sk.svb.lgg3.svb_circlecase_rocket.activity.QCircleMainActivity;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.GameStats;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.QcActivity;
 import sk.svb.lgg3.svb_circlecase_rocket.view.AccelerometerView;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +20,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 public class QcAccelerometerActivity extends QcActivity {
@@ -50,14 +49,16 @@ public class QcAccelerometerActivity extends QcActivity {
 		mAccelerometerView.startDrawImage();
 
 		gs = new GameStats();
-		gs.setScore(0);
+		gs.setScore(-1);
 		updateScore();
 
 		Date date = new Date(System.currentTimeMillis());
 		String time = new SimpleDateFormat("yyyy.MM.dd HH:mm").format(date);
 		gs.setDate(time);
 
+		
 	}
+	
 
 	public void updateScore() {
 		gs.setScore(gs.getScore() + 1);
@@ -69,7 +70,7 @@ public class QcAccelerometerActivity extends QcActivity {
 	public void onResume() {
 		super.onResume();
 		registerSensor();
-				
+
 		registerReceiver(mIntentReceiver, new IntentFilter("game_update"));
 	}
 
@@ -149,13 +150,13 @@ public class QcAccelerometerActivity extends QcActivity {
 	private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+
 			if (intent.getAction() != null
 					&& intent.getAction().equals("game_update")) {
-				if (intent.getBooleanExtra("score", false)){					
+				if (intent.getBooleanExtra("score", false)) {
 					updateScore();
 				}
-				if (intent.getBooleanExtra("end", false)){					
+				if (intent.getBooleanExtra("end", false)) {
 					endGame();
 				}
 			}
