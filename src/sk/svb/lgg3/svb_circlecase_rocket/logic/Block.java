@@ -6,7 +6,7 @@ import android.graphics.Rect;
 
 public class Block {
 
-	public static final int GATE_WIDTH = 200;
+	public static final int GATE_WIDTH = 220;
 	public static final int GATE_HEIGTHT = 80;
 
 	public static final int MIN_SPEED = 45;

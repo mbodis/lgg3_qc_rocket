@@ -107,7 +107,8 @@ public class AccelerometerView extends SurfaceView implements Callback {
 			updateScore();
 			doVibrate(act, 20);
 		}
-		if (block.detectCollision(rx, ry)){
+		if (block.detectCollision(rx - R_SIZE_W, ry - R_SIZE_H) 
+				|| block.detectCollision(rx + R_SIZE_W, ry + R_SIZE_H)){
 			doVibrate(act, 500);
 			endGame();
 		}
