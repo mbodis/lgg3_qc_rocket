@@ -26,6 +26,8 @@ public class GameStatsAdapter extends ArrayAdapter<GameStats> {
 	static class ViewHolder {
 		public TextView highScore;
 		public TextView date;
+		public TextView name;
+		public TextView type;
 	}
 
 	@Override
@@ -50,6 +52,8 @@ public class GameStatsAdapter extends ArrayAdapter<GameStats> {
 			holder = new ViewHolder();
 			holder.highScore = ((TextView) convertView.findViewById(R.id.score));
 			holder.date = ((TextView) convertView.findViewById(R.id.timestamp));
+			holder.name = ((TextView) convertView.findViewById(R.id.name));
+			holder.type = ((TextView) convertView.findViewById(R.id.gtype));
 
 			convertView.setTag(holder);
 		} else {
@@ -58,7 +62,13 @@ public class GameStatsAdapter extends ArrayAdapter<GameStats> {
 
 		GameStats gs = getItem(position);
 		holder.date.setText(gs.getDate());
-		holder.highScore.setText(act.getString(R.string.actual_score) + ": " + gs.getScore());
+		if (gs.getName() != null) {
+			holder.name.setText(gs.getName());
+		}
+		holder.type.setText(gs.getType() == GameStats.GAME_LR ? act
+				.getString(R.string.game_lr) : act.getString(R.string.game_rt));
+		holder.highScore.setText(act.getString(R.string.actual_score) + ": "
+				+ gs.getScore());
 
 		return convertView;
 

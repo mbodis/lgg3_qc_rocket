@@ -1,7 +1,8 @@
 package sk.svb.lgg3.svb_circlecase_rocket.activity;
 
 import sk.svb.lgg3.svb_circlecase_rocket.R;
-import sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerActivity;
+import sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerLrActivity;
+import sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerRtActivity;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.QcActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,7 +48,7 @@ public class QCircleMainActivity extends QcActivity {
 		mListView = (ListView) findViewById(R.id.qc_lv);
 		mListView.setAdapter(new ArrayAdapter<String>(getApplicationContext(),
 				R.layout.qc_list_row,
-				new String[] { getString(R.string.play)}));
+				new String[] { getString(R.string.play_lr), getString(R.string.play_rt)}));
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -57,9 +58,15 @@ public class QCircleMainActivity extends QcActivity {
 				case 0:
 					finish();
 					startActivity(new Intent(getApplicationContext(),
-							QcAccelerometerActivity.class));
+							QcAccelerometerLrActivity.class));
 
 					break;
+				case 1:
+					finish();
+					startActivity(new Intent(getApplicationContext(),
+							QcAccelerometerRtActivity.class));
+
+					break;	
 				}
 
 			}

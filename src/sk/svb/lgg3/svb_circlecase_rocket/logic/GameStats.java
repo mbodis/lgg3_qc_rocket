@@ -4,8 +4,13 @@ import com.orm.SugarRecord;
 
 public class GameStats extends SugarRecord<GameStats> {
 
+	public static final int GAME_LR = 0;
+	public static final int GAME_RT = 1;
+	
 	private int score = 0;
+	private int type = 0;
 	private String date = "";
+	private String name = "";
 
 	public int getScore() {
 		return score;
@@ -21,5 +26,21 @@ public class GameStats extends SugarRecord<GameStats> {
 
 	public void setDate(String date) {
 		this.date = date;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 }

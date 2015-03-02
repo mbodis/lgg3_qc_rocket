@@ -1,6 +1,6 @@
 package sk.svb.lgg3.svb_circlecase_rocket.view;
 
-import sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerActivity;
+import sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerLrActivity;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.Block;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.Stars;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.Stars.Star;
@@ -16,11 +16,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
-public class AccelerometerView extends SurfaceView implements Callback {
+public class AccelerometerViewLr extends SurfaceView implements Callback {
 
 	private CanvasThread canvasThread;
 
-	QcAccelerometerActivity act;
+	Activity act;
 	Paint c_red, c_bl, c_wh, c_wht;
 	int x = 0;
 	int y = 0;
@@ -37,12 +37,12 @@ public class AccelerometerView extends SurfaceView implements Callback {
 
 	public int points = 0;
 
-	public AccelerometerView(Context context) {
+	public AccelerometerViewLr(Context context) {
 		super(context);
 		// TODO Auto-generated method stub
 	}
 
-	public AccelerometerView(Context context, AttributeSet attrs) {
+	public AccelerometerViewLr(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		init();
@@ -55,7 +55,7 @@ public class AccelerometerView extends SurfaceView implements Callback {
 
 	}
 
-	public AccelerometerView(Context context, AttributeSet attrs, int defStyle) {
+	public AccelerometerViewLr(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated method stub
 	}
@@ -76,7 +76,7 @@ public class AccelerometerView extends SurfaceView implements Callback {
 	}
 
 	public void setActivit(Activity act) {
-		this.act = (QcAccelerometerActivity) act;
+		this.act = act;
 	}
 
 	protected void myDraw(Canvas canvas) {
@@ -191,7 +191,7 @@ public class AccelerometerView extends SurfaceView implements Callback {
 					c = this.surfaceHolder.lockCanvas(null);
 					if (c != null) {
 						synchronized (this.surfaceHolder) {
-							AccelerometerView.this.myDraw(c);
+							AccelerometerViewLr.this.myDraw(c);
 						}
 					}
 				} finally {

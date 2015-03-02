@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="sk.svb.lgg3.svb_circlecase_rocket"
-    android:versionCode="1"
+    android:versionCode="2"
     android:versionName="1.0" >
 
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-sdk
         android:minSdkVersion="19"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="22" />
 
     <application
         android:name="com.orm.SugarApp"
@@ -35,7 +35,14 @@
         <activity android:name="sk.svb.lgg3.svb_circlecase_rocket.activity.FullScreenActivity" >
         </activity>
         <activity
-            android:name="sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerActivity"
+            android:name="sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerLrActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerRtActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
@@ -54,7 +61,7 @@
             android:value="qc_rocket.db" />
         <meta-data
             android:name="VERSION"
-            android:value="1" />
+            android:value="3" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />

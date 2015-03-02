@@ -8,9 +8,8 @@ import sk.svb.lgg3.svb_circlecase_rocket.R;
 import sk.svb.lgg3.svb_circlecase_rocket.activity.CurrentScoreActivity;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.GameStats;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.QcActivity;
-import sk.svb.lgg3.svb_circlecase_rocket.view.AccelerometerView;
-import android.app.Notification;
-import android.app.NotificationManager;
+import sk.svb.lgg3.svb_circlecase_rocket.view.AccelerometerViewLr;
+import sk.svb.lgg3.svb_circlecase_rocket.view.AccelerometerViewRt;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,35 +19,39 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
-public class QcAccelerometerActivity extends QcActivity {
+public class QcAccelerometerRtActivity extends QcActivity implements
+		SensorEventListener {
 
 	// sensor
 	private SensorManager mSensorManager;
-	private boolean isAccelerometerRegistered = false;
 
 	// view
-	private AccelerometerView mAccelerometerView;
+	private AccelerometerViewRt mAccelerometerView;
 
 	private GameStats gs;
 	public TextView scoreTextView;
+
+	int initZ = 999;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.game_accelerometer);
+		setContentView(R.layout.game_accelerometer_rt);
 		scoreTextView = (TextView) findViewById(R.id.actual_score);
 
 		onCreateQcActivity();
 
-		mAccelerometerView = (AccelerometerView) findViewById(R.id.sv);
+		mAccelerometerView = (AccelerometerViewRt) findViewById(R.id.sv);
 		mAccelerometerView.setActivit(this);
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mAccelerometerView.startDrawImage();
 
 		gs = new GameStats();
+		gs.setType(GameStats.GAME_RT);
 		gs.setScore(-1);
 		updateScore();
 
@@ -56,9 +59,7 @@ public class QcAccelerometerActivity extends QcActivity {
 		String time = new SimpleDateFormat("yyyy.MM.dd HH:mm").format(date);
 		gs.setDate(time);
 
-		
 	}
-	
 
 	public void updateScore() {
 		gs.setScore(gs.getScore() + 1);
@@ -90,61 +91,44 @@ public class QcAccelerometerActivity extends QcActivity {
 		startActivity(i);
 	}
 
-	private final SensorEventListener mSensorAccelerometerEventListener = new SensorEventListener() {
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-		@Override
-		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+	}
 
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		float mAccelX = 0 - event.values[2];
+		float mAccelY = 0 - event.values[1];
+		float mAccelZ = event.values[0];
+
+		if (initZ == 999) {
+			initZ = (int) mAccelZ;
 		}
 
-		@Override
-		public void onSensorChanged(SensorEvent event) {
-			// mAccelX = 0 - event.values[2];
-			// mAccelY = 0 - event.values[1];
-			// mAccelZ = event.values[0];
-
-			if (event == null)
-				return;
-
-			int forwBack = (int) (event.values[1]);
-			if (forwBack > 40) {
-				forwBack = 40;
-			}
-			if (forwBack < -40) {
-				forwBack = -40;
-			}
-
-			int lefRig = (int) (event.values[2]);
-			if (lefRig > 40) {
-				lefRig = 40;
-			}
-			if (lefRig < -40) {
-				lefRig = -40;
-			}
-
-			mAccelerometerView.setCoords(-lefRig, -forwBack);
+		int z = (int) ((event.values[0]) - 180) * 2;
+		if (z > 39) {
+			z = 38;
+		}
+		if (z < -39) {
+			z = -38;
 		}
 
-	};
+		mAccelerometerView.setCoords(z, (int) (Math.sqrt((35 * 35 - z * z))));
+	}
 
 	private void registerSensor() {
-		try {
-			// showAllSensors();
-			List<Sensor> sensorList = mSensorManager
-					.getSensorList(Sensor.TYPE_ORIENTATION);
-			mSensorManager.registerListener(mSensorAccelerometerEventListener,
-					sensorList.get(0), SensorManager.SENSOR_DELAY_GAME);
-			isAccelerometerRegistered = true;
-		} catch (Exception e) {
-			isAccelerometerRegistered = false;
-		}
+
+		// showAllSensors();
+		List<Sensor> sensorList = mSensorManager
+				.getSensorList(Sensor.TYPE_ORIENTATION);
+		mSensorManager.registerListener(this, sensorList.get(0),
+				SensorManager.SENSOR_DELAY_GAME);
+
 	}
 
 	private void unregisterSensor() {
-		if (!isAccelerometerRegistered)
-			mSensorManager
-					.unregisterListener(mSensorAccelerometerEventListener);
-
+		mSensorManager.unregisterListener(this);
 	}
 
 	private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
