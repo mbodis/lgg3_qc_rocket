@@ -9,6 +9,7 @@ public class GameStats extends SugarRecord<GameStats> {
 	
 	private int score = 0;
 	private int type = 0;
+	
 	private String date = "";
 	private String name = "";
 

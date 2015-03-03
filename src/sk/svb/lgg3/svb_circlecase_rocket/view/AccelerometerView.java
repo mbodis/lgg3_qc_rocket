@@ -1,6 +1,5 @@
 package sk.svb.lgg3.svb_circlecase_rocket.view;
 
-import sk.svb.lgg3.svb_circlecase_rocket.game.QcAccelerometerLrActivity;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.Block;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.Stars;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.Stars.Star;
@@ -16,7 +15,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
-public class AccelerometerViewLr extends SurfaceView implements Callback {
+public class AccelerometerView extends SurfaceView implements Callback {
 
 	private CanvasThread canvasThread;
 
@@ -36,13 +35,14 @@ public class AccelerometerViewLr extends SurfaceView implements Callback {
 	private Block block;
 
 	public int points = 0;
+	int countDown = 20;
 
-	public AccelerometerViewLr(Context context) {
+	public AccelerometerView(Context context) {
 		super(context);
 		// TODO Auto-generated method stub
 	}
 
-	public AccelerometerViewLr(Context context, AttributeSet attrs) {
+	public AccelerometerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		init();
@@ -55,7 +55,7 @@ public class AccelerometerViewLr extends SurfaceView implements Callback {
 
 	}
 
-	public AccelerometerViewLr(Context context, AttributeSet attrs, int defStyle) {
+	public AccelerometerView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated method stub
 	}
@@ -99,18 +99,24 @@ public class AccelerometerViewLr extends SurfaceView implements Callback {
 				+ R_SIZE_H, c_wh);
 		canvas.drawLine(rx - R_SIZE_W, ry + R_SIZE_H, rx, ry - R_SIZE_H, c_wh);
 
-		canvas.drawRect(block.getRect1(), c_wht);
-		canvas.drawRect(block.getRect2(), c_wht);
-		block.update(points);
-		if (block.throughGate(rx, ry)) {
-			points++;
-			updateScore();
-			doVibrate(act, 20);
+		if (countDown <= 0){
+			canvas.drawRect(block.getRect1(), c_wht);
+			canvas.drawRect(block.getRect2(), c_wht);
+			block.update(points);
+			if (block.throughGate(rx, ry)) {
+				points++;
+				updateScore();
+				doVibrate(act, 20);
+			}
+			if (block.detectCollision(rx - R_SIZE_W, ry - R_SIZE_H) 
+					|| block.detectCollision(rx + R_SIZE_W, ry + R_SIZE_H)){
+				doVibrate(act, 500);
+				endGame();
+			}
 		}
-		if (block.detectCollision(rx - R_SIZE_W, ry - R_SIZE_H) 
-				|| block.detectCollision(rx + R_SIZE_W, ry + R_SIZE_H)){
-			doVibrate(act, 500);
-			endGame();
+		
+		if (countDown > 0){
+			countDown --;
 		}
 
 	}
@@ -191,7 +197,7 @@ public class AccelerometerViewLr extends SurfaceView implements Callback {
 					c = this.surfaceHolder.lockCanvas(null);
 					if (c != null) {
 						synchronized (this.surfaceHolder) {
-							AccelerometerViewLr.this.myDraw(c);
+							AccelerometerView.this.myDraw(c);
 						}
 					}
 				} finally {

@@ -14,12 +14,14 @@ public class Block {
 
 	int width, height;
 	int speed = MIN_SPEED;
+	
 	int gate_1 = 400;
 	int gate_2 = width - GATE_WIDTH - gate_1;
+	
 	int x = 0;
-	boolean x_up = true;
-
 	int y = 0;
+	
+	boolean x_up = true;
 	Random rand;
 	boolean visited = false;
 	boolean moving = false;

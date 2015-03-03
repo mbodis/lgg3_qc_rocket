@@ -8,7 +8,7 @@ import sk.svb.lgg3.svb_circlecase_rocket.R;
 import sk.svb.lgg3.svb_circlecase_rocket.activity.CurrentScoreActivity;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.GameStats;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.QcActivity;
-import sk.svb.lgg3.svb_circlecase_rocket.view.AccelerometerViewLr;
+import sk.svb.lgg3.svb_circlecase_rocket.view.AccelerometerView;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +28,7 @@ public class QcAccelerometerLrActivity extends QcActivity implements
 	private SensorManager mSensorManager;
 
 	// view
-	private AccelerometerViewLr mAccelerometerView;
+	private AccelerometerView mAccelerometerView;
 
 	private GameStats gs;
 	public TextView scoreTextView;
@@ -42,7 +42,7 @@ public class QcAccelerometerLrActivity extends QcActivity implements
 
 		onCreateQcActivity();
 
-		mAccelerometerView = (AccelerometerViewLr) findViewById(R.id.sv);
+		mAccelerometerView = (AccelerometerView) findViewById(R.id.sv);
 		mAccelerometerView.setActivit(this);
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mAccelerometerView.startDrawImage();
@@ -117,7 +117,7 @@ public class QcAccelerometerLrActivity extends QcActivity implements
 		if (lefRig < -40) {
 			lefRig = -40;
 		}
-Log.d("SSS", "x:" + lefRig + " y:"+forwBack );
+		
 		mAccelerometerView.setCoords(-lefRig, -forwBack);
 	}
 

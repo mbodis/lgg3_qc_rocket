@@ -8,8 +8,7 @@ import sk.svb.lgg3.svb_circlecase_rocket.R;
 import sk.svb.lgg3.svb_circlecase_rocket.activity.CurrentScoreActivity;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.GameStats;
 import sk.svb.lgg3.svb_circlecase_rocket.logic.QcActivity;
-import sk.svb.lgg3.svb_circlecase_rocket.view.AccelerometerViewLr;
-import sk.svb.lgg3.svb_circlecase_rocket.view.AccelerometerViewRt;
+import sk.svb.lgg3.svb_circlecase_rocket.view.AccelerometerView;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +28,7 @@ public class QcAccelerometerRtActivity extends QcActivity implements
 	private SensorManager mSensorManager;
 
 	// view
-	private AccelerometerViewRt mAccelerometerView;
+	private AccelerometerView mAccelerometerView;
 
 	private GameStats gs;
 	public TextView scoreTextView;
@@ -40,12 +39,12 @@ public class QcAccelerometerRtActivity extends QcActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.game_accelerometer_rt);
+		setContentView(R.layout.game_accelerometer);
 		scoreTextView = (TextView) findViewById(R.id.actual_score);
 
 		onCreateQcActivity();
 
-		mAccelerometerView = (AccelerometerViewRt) findViewById(R.id.sv);
+		mAccelerometerView = (AccelerometerView) findViewById(R.id.sv);
 		mAccelerometerView.setActivit(this);
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mAccelerometerView.startDrawImage();
@@ -71,7 +70,6 @@ public class QcAccelerometerRtActivity extends QcActivity implements
 	public void onResume() {
 		super.onResume();
 		registerSensor();
-
 		registerReceiver(mIntentReceiver, new IntentFilter("game_update"));
 	}
 
@@ -84,11 +82,11 @@ public class QcAccelerometerRtActivity extends QcActivity implements
 	}
 
 	private void endGame() {
-		finish();
 		Intent i = new Intent(getApplicationContext(),
 				CurrentScoreActivity.class);
 		i.putExtra("score", gs.getScore());
 		startActivity(i);
+		finish();
 	}
 
 	@Override
@@ -98,15 +96,15 @@ public class QcAccelerometerRtActivity extends QcActivity implements
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		float mAccelX = 0 - event.values[2];
-		float mAccelY = 0 - event.values[1];
-		float mAccelZ = event.values[0];
+		// float mAccelX = 0 - event.values[2];
+		// float mAccelY = 0 - event.values[1];
+		// float mAccelZ = event.values[0];
 
 		if (initZ == 999) {
-			initZ = (int) mAccelZ;
-		}
+			initZ = (int) event.values[0];
+		}		
 
-		int z = (int) ((event.values[0]) - 180) * 2;
+		int z = (int) ((initZ - event.values[0]) ) * 2;
 		if (z > 39) {
 			z = 38;
 		}
@@ -114,7 +112,7 @@ public class QcAccelerometerRtActivity extends QcActivity implements
 			z = -38;
 		}
 
-		mAccelerometerView.setCoords(z, (int) (Math.sqrt((35 * 35 - z * z))));
+		mAccelerometerView.setCoords(-z, (int) (Math.sqrt((35 * 35 - z * z))));
 	}
 
 	private void registerSensor() {
@@ -124,7 +122,6 @@ public class QcAccelerometerRtActivity extends QcActivity implements
 				.getSensorList(Sensor.TYPE_ORIENTATION);
 		mSensorManager.registerListener(this, sensorList.get(0),
 				SensorManager.SENSOR_DELAY_GAME);
-
 	}
 
 	private void unregisterSensor() {
